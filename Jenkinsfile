@@ -26,11 +26,9 @@ pipeline {
                    '''
             }            
         }
-        tools {
-    maven 'M3'
-  }
+        
         stage('BUILD') {
-            steps {
+            withMaven(maven: 'mvn') steps {
                 sh 'mvn clean install package'
             }
         }
