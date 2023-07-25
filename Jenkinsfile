@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-      PATH = "$PATH:/opt/apache-maven-3.9.1\bin"
+      PATH = "$PATH:/opt/apache-maven-3.9.1/bin"
     }
     
     stages {
@@ -14,9 +14,10 @@ pipeline {
 
         stage('CODE CHECKOUT') {
             steps {
-                git 'https://github.com/mhauas/devops_real_time_project_1.git'
+                git 'https://github.com/mhauas/devops_real_time_project_1.git
             }
         }
+        
         stage('MODIFIED IMAGE TAG') {
             steps {
                 sh '''
@@ -26,24 +27,11 @@ pipeline {
                    '''
             }            
         }
-        stages {
-        stage ('Initialize') {
+        
+        stage('BUILD') {
             steps {
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                '''
+                sh 'mvn clean install package'
             }
-        }
-         stage ('Build') {
-            steps {
-                sh 'mvn -Dmaven.test.failure.ignore=true install' 
-            }
-            post {
-                success {
-                    junit 'target/surefire-reports/**/*.xml' 
-                }
-            }   
+        } 
     }
 }
-    }
